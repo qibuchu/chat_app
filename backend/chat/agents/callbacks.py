@@ -6,7 +6,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from langchain.callbacks.base import AsyncCallbackHandler
 from langchain.schema import LLMResult, BaseMessage
 
-
+#异步回调处理器，专门用于在WebSocket环境中实现流式响应功能
 class AsyncStreamingCallbackHandler(AsyncCallbackHandler):
 
     def __init__(self, consumer: AsyncWebsocketConsumer):

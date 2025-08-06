@@ -14,7 +14,7 @@ class AgentFactory:
 
     def __init__(self):
         self.chat_message_repository = ChatMessageRepository()
-
+#创建代理
     async def create_agent(
         self,
         tool_names: List[str],
@@ -22,21 +22,22 @@ class AgentFactory:
         streaming=False,
         callback_handlers: List[BaseCallbackHandler] = None,
     ) -> AgentExecutor:
-        # Instantiate the OpenAI LLM
+
         llm = ChatOpenAI(
+            model="deepseek-chat",  # DeepSeek模型名称
+            openai_api_base="https://api.deepseek.com/v1",  # DeepSeek API端点
+            openai_api_key=settings.deepseek_api_key,  # 修改点2：使用DeepSeek的API密钥
             temperature=0,
-            openai_api_key=settings.openai_api_key,
             streaming=streaming,
             callbacks=callback_handlers,
         )
 
-        # Load the Tools that the Agent will use
+        
         tools = load_tools(tool_names, llm=llm)
 
-        # Load the memory and populate it with any previous messages
         memory = await self._load_agent_memory(chat_id)
 
-        # Initialize and return the agent
+        # 创建代理执行器
         return initialize_agent(
             tools=tools,
             llm=llm,
@@ -44,7 +45,7 @@ class AgentFactory:
             verbose=True,
             memory=memory
         )
-
+    #记忆加载实现
     async def _load_agent_memory(
         self,
         chat_id: str = None,

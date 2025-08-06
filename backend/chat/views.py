@@ -9,26 +9,27 @@ from .serializers import AgentSerializer
 from .serializers import ChatSerializer, ChatMessageSerializer
 
 
+#聊天会话视图集
 class ChatViewSet(viewsets.ModelViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
-
+#创建聊天会话
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data)
-
+#删除聊天会话
     def perform_destroy(self, instance):
         # Also delete related chat messages
         ChatMessage.objects.filter(chat_id=instance.id).delete()
         instance.delete()
-
+#列出所有聊天会话
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return JsonResponse({"chats": serializer.data})
-
+#自定义端点：获取聊天消息
     @action(detail=True, methods=['get'])
     def messages(self, request, pk=None):
         chat = self.get_object()
@@ -36,18 +37,18 @@ class ChatViewSet(viewsets.ModelViewSet):
         serializer = ChatMessageSerializer(messages, many=True)
         return Response(serializer.data)
 
-
+#AI代理视图集
 class AgentViewSet(viewsets.ModelViewSet):
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
     lookup_field = 'token'
-
+#删除代理
     def destroy(self, request, *args, **kwargs):
         agent = self.get_object()
         agent.is_active = False
         agent.save()
         return Response(status=204)
-
+#更新代理
     def update(self, request, *args, **kwargs):
         agent = self.get_object()
         agent.agent_type = request.data.get('agent_type')

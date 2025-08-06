@@ -205,5 +205,3 @@ frontend/
 ## 许可证 📄
 本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
 
-## 支持 💬
-如需额外支持，请通过 Twitter 联系 [@virat](https://twitter.com/virat)
